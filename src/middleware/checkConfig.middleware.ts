@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { isConfiguration } from "../validation/payload";
-
+/**
+ * This middleware checks if the request is compatible with the
+ * requested endpoint
+ *
+ * @param req Express's request Object
+ * @param res Express's response Object
+ * @param next Express's next function
+ */
 const checkConfig = (
     req: Request,
     res: Response,

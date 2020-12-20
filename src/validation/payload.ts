@@ -6,7 +6,8 @@ import { Configuration, ConfigurationValue } from "../types";
  * @param data Configuration type object of the Payload
  * @return boolean
  */
-function isConfiguration(data: Configuration): data is Configuration {
+function isConfiguration(data: Record<string, unknown>): data is Configuration {
+    if (Object.keys(data).length !== 3) return false;
     if (!data.id || typeof data.id !== "string") return false;
     if (!data.name || typeof data.name !== "string") return false;
     if (!data.value || !isConfigurationValue(data.value)) return false;
