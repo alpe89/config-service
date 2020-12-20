@@ -54,6 +54,8 @@ export class Store implements ConfigurationStore {
      * @param payload The actual data to store
      */
     set(key: string, payload: Configuration): boolean {
+        if (!isConfiguration(payload)) return false;
+
         if (!this.store[key]) {
             this.store[key] = payload;
             return true;
@@ -64,7 +66,8 @@ export class Store implements ConfigurationStore {
      * After the check of the existance of the key in the store,
      * an override between the previous data and the provided one is made.
      * After a check to ensure that the new configuration is valid we delete the old one
-     * and store the new one calling the set method.
+     * and store the new one calling the set method. This method is not intented to
+     * insert new keys in the store, for that purpose use the set method.
      *
      * @param key The key to update the configuration for
      * @param payload The actual data to update the store
@@ -76,10 +79,24 @@ export class Store implements ConfigurationStore {
 
         if (!isConfiguration(config)) return false;
 
-        delete this.store[key];
+        const configDeleted = this.delete(key);
+
+        if (!configDeleted) return false;
+
         const newKey = config.id;
         const updatedStore = this.set(newKey, config);
 
         return updatedStore;
+    }
+    /**
+     * Deletes the configuration identified by the key if exists.
+     *
+     * @param key The key to delete the configuration for
+     */
+    delete(key: string): boolean {
+        if (!this.store[key]) return false;
+
+        delete this.store[key];
+        return true;
     }
 }

@@ -27,13 +27,6 @@ const checkConfig = (
         });
     }
 
-    if (!isConfiguration(req.body)) {
-        return res.status(400).json({
-            status: 400,
-            message: "Configuration data is not in the correct format",
-        });
-    }
-
     next();
 };
 
