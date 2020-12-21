@@ -4,15 +4,15 @@ import {
     ConfigurationStorage,
     Configuration,
     PartialConfiguration,
-} from "./types";
-import { isConfiguration } from "./validation/payload";
+} from "../types";
+import { isConfiguration } from "../validation/payload";
 /**
  * This class represents the Storage of the service,
  * at the moment configurations are stored inside a normal
  * Javascript Object, every key is directly linked to the
  * Configuration's ID
  */
-export class Store implements ConfigurationStore {
+export class MemoryStore implements ConfigurationStore {
     private store: ConfigurationStorage;
     /**
      * Class constructor, initializes to a blank storage or

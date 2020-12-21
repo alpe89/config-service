@@ -26,10 +26,16 @@ type ConfigurationSet =
     | Record<string, never>;
 
 interface ConfigurationStore {
-    get: (configId?: string) => ConfigurationSet;
-    set: (configId: string, payload: Configuration) => boolean;
-    update: (configId: string, payload: PartialConfiguration) => boolean;
-    delete: (configId: string) => boolean;
+    get: (configId?: string) => ConfigurationSet | Promise<ConfigurationSet>;
+    set: (
+        configId: string,
+        payload: Configuration
+    ) => boolean | Promise<boolean>;
+    update: (
+        configId: string,
+        payload: PartialConfiguration
+    ) => boolean | Promise<boolean>;
+    delete: (configId: string) => boolean | Promise<boolean>;
 }
 
 export type {

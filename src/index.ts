@@ -1,6 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 import chalk from "chalk";
 import bodyParser from "body-parser";
+import * as dotenv from "dotenv";
+// In Local development we use the environment variables in the .env file
+if (process.env.NODE_ENV === "local") {
+    dotenv.config();
+}
 
 import { checkConfig } from "./middleware/checkConfig.middleware";
 import { store } from "./data/store";
@@ -10,12 +15,16 @@ const PORT = 3456;
 // Parse the body of the request as JSON and save it to req.body
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-    res.status(200).json({ status: 200, message: "ok", data: store.get() });
+app.get("/", async (req, res) => {
+    res.status(200).json({
+        status: 200,
+        message: "ok",
+        data: await store.get(),
+    });
 });
 
-app.get("/:configId", (req, res) => {
-    const resultSet = store.get(req.params.configId);
+app.get("/:configId", async (req, res) => {
+    const resultSet = await store.get(req.params.configId);
 
     if (Object.keys(resultSet).length === 0) {
         res.status(404).json({
@@ -31,8 +40,16 @@ app.get("/:configId", (req, res) => {
     }
 });
 
-app.post("/:configId", checkConfig, (req, res) => {
-    const storeUpdated = store.set(req.params.configId, req.body);
+app.post("/:configId", checkConfig, async (req, res) => {
+    if (req.params.configId !== req.body.id) {
+        return res.status(400).json({
+            status: 400,
+            message:
+                "To insert a new configuration the endpoint must match the config's ID",
+        });
+    }
+
+    const storeUpdated = await store.set(req.params.configId, req.body);
 
     if (storeUpdated) {
         res.status(200).json({ status: 200, message: "ok" });
@@ -44,8 +61,8 @@ app.post("/:configId", checkConfig, (req, res) => {
     }
 });
 
-app.put("/:configId", checkConfig, (req, res) => {
-    const storeUpdated = store.update(req.params.configId, req.body);
+app.put("/:configId", checkConfig, async (req, res) => {
+    const storeUpdated = await store.update(req.params.configId, req.body);
 
     if (storeUpdated) {
         res.status(200).json({ status: 200, message: "ok" });
