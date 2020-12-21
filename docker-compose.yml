@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  config-service:
+    build: .
+    ports:
+      - 3456:3456
+    environment:
+      - REDIS_HOST=redis
+    links:
+      - redis
+    depends_on:
+      - redis
+  redis:
+    image: redis

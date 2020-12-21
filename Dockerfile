@@ -20,6 +20,8 @@ FROM node:lts-alpine3.10
 
 WORKDIR /app
 ENV NODE_ENV=production
+ENV REDIS_HOST=127.0.0.1
+ENV REDIS_PORT=6379
 
 COPY package*.json ./
 RUN npm ci --quiet --only=production

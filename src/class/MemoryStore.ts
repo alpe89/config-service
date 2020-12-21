@@ -83,6 +83,7 @@ export class MemoryStore implements ConfigurationStore {
 
         if (!configDeleted) return false;
 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const newKey = config.id;
         const updatedStore = this.set(newKey, config);
 

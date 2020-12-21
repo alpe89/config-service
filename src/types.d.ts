@@ -38,6 +38,8 @@ interface ConfigurationStore {
     delete: (configId: string) => boolean | Promise<boolean>;
 }
 
+type StorageType = "Redis" | "Memory";
+
 export type {
     Configuration,
     ConfigurationValue,
@@ -45,4 +47,5 @@ export type {
     ConfigurationStore,
     ConfigurationSet,
     PartialConfiguration,
+    StorageType,
 };
