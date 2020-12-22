@@ -5,8 +5,9 @@ __Configuration CRUD service powered by Redis__
 - [Config Service](#config-service)
 - [General Info](#general-info)
     - [Tech Stack](#tech-stack)
-    - [Testing](#testing)
     - [Storage](#storage)
+    - [Testing](#testing)
+    - [CI/CD](#cicd)
 - [Developer's Guide](#developers-guide)
 - [What should be included next](#what-should-be-included-next)
 
@@ -35,13 +36,17 @@ At this point in the development there is absolutely no authentication nor autho
 ### Tech Stack
 
 I choose Node because it is my go-to language for the backend, especially for prototypes because in my opinion is very quick and easy to start a project. The same reasons still holds for Express as the framework of choice, very easy to use and not opinionated on the project structure nor the packages that uses. As for the testing framework I'm using Jest because is the default test runner of the React ecosystem and could be beneficial to have the same platform to test Backend and Frontend code in order to share knowledge through the teams. 
+### Storage
+
+The choice of which type of storage has been quite simple, a fast and robust in-memory datastore, so Redis is the "database" that is going to store the configurations. The initial prototype used to store everything in a plain Javascript Object (basically a map), then we have added Redis support without changing the core Express application. As of today you can easily switch the type of Storage with a simple change in the environment file ```.env```, inside the project there is a "Factory" that builds the instance of the Storage type desired.
 
 ### Testing
 
 There are a couple of test suites with unit tests and integration test (API). It is not enough by any means and with time we should add test cases in order to cover the broad majority of the functionalities and edge cases of the application
-### Storage
 
-The choice of which type of storage has been quite simple, a fast and robust in-memory datastore, so Redis is the "database" that is going to store the configurations. The initial prototype used to store everything in a plain Javascript Object (basically a map), then we have added Redis support without changing the core Express application. As of today you can easily switch the type of Storage with a simple change in the environment file ```.env```, inside the project there is a "Factory" that builds the instance of the Storage type desired.
+### CI/CD
+
+At the moment there is only a rudimentary CI test job that runs the automated tests, the repo is setted up to wait for the CI test job to end before merging into the master branch.
 
 # Developer's Guide
 
