@@ -2,93 +2,97 @@ import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 
 import { checkConfig } from "./../middleware/checkConfig.middleware";
-import { store } from "./../data/store";
+import { ConfigurationStore } from "../types";
 
-const app = express();
-// Parse the body of the request as JSON and save it to req.body
-app.use(bodyParser.json());
+const makeServer = (store: ConfigurationStore): express.Application => {
+    const app = express();
+    // Parse the body of the request as JSON and save it to req.body
+    app.use(bodyParser.json());
 
-app.get("/", async (req, res) => {
-    res.status(200).json({
-        status: 200,
-        message: "ok",
-        data: await store.get(),
-    });
-});
-
-app.get("/:configId", async (req, res) => {
-    const resultSet = await store.get(req.params.configId);
-
-    if (Object.keys(resultSet).length === 0) {
-        res.status(404).json({
-            status: 404,
-            message: `No configuration found for ${req.params.configId}`,
-        });
-    } else {
+    app.get("/", async (req, res) => {
         res.status(200).json({
             status: 200,
             message: "ok",
-            data: resultSet[req.params.configId],
+            data: await store.get(),
         });
-    }
-});
+    });
 
-app.post("/:configId", checkConfig, async (req, res) => {
-    if (req.params.configId !== req.body.id) {
-        return res.status(400).json({
-            status: 400,
-            message:
-                "To insert a new configuration the endpoint must match the config's ID",
-        });
-    }
+    app.get("/:configId", async (req, res) => {
+        const resultSet = await store.get(req.params.configId);
 
-    const storeUpdated = await store.set(req.params.configId, req.body);
+        if (Object.keys(resultSet).length === 0) {
+            res.status(404).json({
+                status: 404,
+                message: `No configuration found for ${req.params.configId}`,
+            });
+        } else {
+            res.status(200).json({
+                status: 200,
+                message: "ok",
+                data: resultSet[req.params.configId],
+            });
+        }
+    });
 
-    if (storeUpdated) {
-        res.status(200).json({ status: 200, message: "ok" });
-    } else {
-        res.status(400).json({
-            status: 400,
-            message: "Could not insert the configuration provided",
-        });
-    }
-});
+    app.post("/:configId", checkConfig, async (req, res) => {
+        if (req.params.configId !== req.body.id) {
+            return res.status(400).json({
+                status: 400,
+                message:
+                    "To insert a new configuration the endpoint must match the config's ID",
+            });
+        }
 
-app.put("/:configId", checkConfig, async (req, res) => {
-    const storeUpdated = await store.update(req.params.configId, req.body);
+        const storeUpdated = await store.set(req.params.configId, req.body);
 
-    if (storeUpdated) {
-        res.status(200).json({ status: 200, message: "ok" });
-    } else {
-        res.status(400).json({
-            status: 400,
-            message: "Could not update the configuration provided",
-        });
-    }
-});
+        if (storeUpdated) {
+            res.status(200).json({ status: 200, message: "ok" });
+        } else {
+            res.status(400).json({
+                status: 400,
+                message: "Could not insert the configuration provided",
+            });
+        }
+    });
 
-app.delete("/:configId", async (req, res) => {
-    const keyDeleted = await store.delete(req.params.configId);
+    app.put("/:configId", checkConfig, async (req, res) => {
+        const storeUpdated = await store.update(req.params.configId, req.body);
 
-    if (keyDeleted) {
-        res.status(200).json({ status: 200, message: "ok" });
-    } else {
-        res.status(400).json({
-            status: 400,
-            message: `Could not delete the key ${req.params.configId}`,
-        });
-    }
-});
+        if (storeUpdated) {
+            res.status(200).json({ status: 200, message: "ok" });
+        } else {
+            res.status(400).json({
+                status: 400,
+                message: "Could not update the configuration provided",
+            });
+        }
+    });
 
-app.use((req, res) => {
-    res.status(404).json({ status: 404, message: "Endpoint not found" });
-});
+    app.delete("/:configId", async (req, res) => {
+        const keyDeleted = await store.delete(req.params.configId);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    if (res.statusCode === 200) res.status(500);
+        if (keyDeleted) {
+            res.status(200).json({ status: 200, message: "ok" });
+        } else {
+            res.status(400).json({
+                status: 400,
+                message: `Could not delete the key ${req.params.configId}`,
+            });
+        }
+    });
 
-    res.json({ status: res.statusCode, message: "ko", error: err.message });
-});
+    app.use((req, res) => {
+        res.status(404).json({ status: 404, message: "Endpoint not found" });
+    });
 
-export { app };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+        if (res.statusCode === 200) res.status(500);
+
+        res.json({ status: res.statusCode, message: "ko", error: err.message });
+    });
+
+    return app;
+};
+
+export { makeServer };

@@ -4,9 +4,12 @@ import * as dotenv from "dotenv";
 if (process.env.NODE_ENV === "local") {
     dotenv.config();
 }
-import { app } from "./server/app";
+import { makeServer } from "./server/app";
+import { store } from "./data/store";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const PORT = +process.env.PORT! ?? 3456;
+
+const app = makeServer(store);
 
 app.listen(PORT, () => {
     console.log(
