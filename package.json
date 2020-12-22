@@ -1,0 +1,52 @@
+{
+  "name": "config-service",
+  "version": "0.0.1",
+  "description": "HTTP services config storage service",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --verbose",
+    "start:docker": "docker-compose up -d --build",
+    "stop:docker": "docker-compose down",
+    "prestart": "npm run make",
+    "start": "NODE_ENV=production node ./build/index.js",
+    "dev": "NODE_ENV=local nodemon ./src/index.ts",
+    "make": "tsc --project ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alpe89/config-service.git"
+  },
+  "author": "Alberto Pertusi (https://github.com/alpe89)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alpe89/config-service/issues"
+  },
+  "homepage": "https://github.com/alpe89/config-service#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/express": "^4.17.9",
+    "@types/jest": "^26.0.19",
+    "@types/node": "^14.14.14",
+    "@types/redis": "^2.8.28",
+    "@types/supertest": "^2.0.10",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.16.0",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.0.1",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
