@@ -137,18 +137,25 @@ export class RedisStore implements ConfigurationStore {
         try {
             const value = JSON.parse(redisValue);
 
+            const shouldDeleteKey = payload.id && payload.id !== key;
+
             const config: Configuration = { ...value, ...payload };
 
             if (!isConfiguration(config)) return false;
 
-            const configDeleted = await this.delete(key);
-
-            if (!configDeleted) return false;
-
             const newKey = config.id;
-            const updatedStore = await this.set(newKey, config);
 
-            return updatedStore;
+            const updatedStore = await this.setRedisKey(
+                newKey,
+                JSON.stringify(config)
+            );
+
+            if (updatedStore !== undefined && shouldDeleteKey) {
+                const configDeleted = await this.delete(key);
+                if (!configDeleted) return false;
+            }
+
+            return updatedStore !== undefined;
         } catch (err) {
             console.error(err);
             return false;
