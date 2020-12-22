@@ -74,6 +74,19 @@ app.put("/:configId", checkConfig, async (req, res) => {
     }
 });
 
+app.delete("/:configId", async (req, res) => {
+    const keyDeleted = await store.delete(req.params.configId);
+
+    if (keyDeleted) {
+        res.status(200).json({ status: 200, message: "ok" });
+    } else {
+        res.status(400).json({
+            status: 400,
+            message: `Could not delete the key ${req.params.configId}`,
+        });
+    }
+});
+
 app.use((req, res) => {
     res.status(404).json({ status: 404, message: "Endpoint not found" });
 });

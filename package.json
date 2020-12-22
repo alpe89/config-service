@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --verbose",
-    "start": "node ./build/index.js",
+    "start:docker": "docker-compose up -d --build",
+    "stop:docker": "docker-compose down",
+    "prestart": "npm run make",
+    "start": "NODE_ENV=production node ./build/index.js",
     "dev": "NODE_ENV=local nodemon ./src/index.ts",
     "make": "tsc --project ./"
   },
