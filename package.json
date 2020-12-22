@@ -1,6 +1,6 @@
 {
   "name": "config-service",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "HTTP services config storage service",
   "main": "index.js",
   "scripts": {
