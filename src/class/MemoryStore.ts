@@ -74,18 +74,20 @@ export class MemoryStore implements ConfigurationStore {
      */
     update(key: string, payload: PartialConfiguration): boolean {
         if (!this.store[key]) return false;
+        const shouldDeleteKey = payload.id && payload.id !== key;
 
         const config: Configuration = { ...this.store[key], ...payload };
 
         if (!isConfiguration(config)) return false;
 
-        const configDeleted = this.delete(key);
-
-        if (!configDeleted) return false;
-
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const newKey = config.id;
         const updatedStore = this.set(newKey, config);
+
+        if (updatedStore && shouldDeleteKey) {
+            const configDeleted = this.delete(key);
+            if (!configDeleted) return false;
+        }
 
         return updatedStore;
     }
